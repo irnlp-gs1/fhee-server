@@ -1,0 +1,56 @@
+FORMAT: 1A
+HOST: http://fhee.gs1.com
+
+# GS1 Food Hazard Event Extraction
+
+An endpoint to access food hazard event information extracted from various sources (e.g. News, SNS)
+
+## Events Collection [/events{?page,limit}]
+
+### List of All Events [GET]
+
++ Parameters
+    + page (optional, integer) - parameter for pagination. The first page is returned if not specified.
+    + limit (optional, integer) - default is 20
+    
++ Response 200 (application/json)
+
+        [
+            {
+                "total_count": 10232,
+                "events": [
+                    {
+                        "id": "1",
+                        "src": "http://example.com",
+                        "src_type": "news",
+                        "field1": "value1",
+                        "field2": "value2"
+                    },
+                    {
+                        "id": "2",
+                        "src": "http://example2.com",
+                        "src_type": "twitter",
+                        "field1": "value1",
+                        "field2": null,
+                        "field3": "value3"
+                    }
+                ]
+            }
+        ]
+
+## Event [/events/{id}/]
+
+### Single Event [GET]
+
++ Parameters
+    + id (integer) - event's unique id
+    
++ Response 200 (application/json)
+    
+        {
+            "id": "1",
+            "src": "http://example.com",
+            "src_type": "news",
+            "field1": "value1",
+            "field2": "value2"
+        }
