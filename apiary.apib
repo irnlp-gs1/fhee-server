@@ -35,9 +35,17 @@ An endpoint to access food hazard event information extracted from various sourc
         
 ## Data Structures
 ### Event
-+ id: unique id (required)
-+ src: source URL (required)
-+ src_type: source type (required)
-+ field1: description for field1 (optional)
-+ field2: description for field2 (optional)
-+ field3: description for field3 (optional)
++ id: 1 - unique id (required)
++ datetime: 2016-04-05 05:22:00+00 - datetime
++ media: 중앙일보 - the news media
++ text - information comming from source text
+    + title - the title of source text
+    + processed - the processed source text
++ keywords - food-hazard-related keywords extracted from the text
+    + food - a food name
+    + ing - am ingredient keyword
+    + bio - a biological threat keyword 
+    + chem - a chemical threat keyword
+    + germ
+    + city - a city name
+    + county - a geographical region in a city
