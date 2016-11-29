@@ -22,12 +22,12 @@ An endpoint to access food hazard event information extracted from various sourc
         + page: 1 (number, required) - the current page
         + limit: 20 (number, required) - the current page limit
 
-## Event [/events/{id}/]
+## Event [/events/{uid}/]
 
 ### Single Event [GET]
 
 + Parameters
-    + id (integer, required) - event's unique id
+    + uid (integer, required) - event's unique id
     
 + Response 200 (application/json)
     
@@ -35,7 +35,7 @@ An endpoint to access food hazard event information extracted from various sourc
         
 ## Data Structures
 ### Event
-+ id: 1 - unique id (required)
++ uid: 1 - unique id (required)
 + datetime: 2016-04-05 05:22:00+00 - datetime
 + media: 중앙일보 - the news media
 + text - information comming from source text
