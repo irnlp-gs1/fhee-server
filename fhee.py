@@ -44,13 +44,33 @@ def events():
 
     Returns:
         events (:obj:`list`): a list of events
+
+        {
+            'page': 1,
+            'limit': 20,
+            'events': [...],
+            'count': 20
+        }
     """
     # get pagination params
-    page = request.args.get('page', 1)
-    limit = request.args.get('limit', 20)
+    try:
+        page = int(request.args.get('page', 1))
+        limit = int(request.args.get('limit', 20))
+    except ValueError:
+        return None
 
-    # do DB query
-    return '{}_{}'.format(page, limit)
+    # do DB query    
+    docs = []
+    for d in collection.fetchAll(limit=limit, skip=(page-1)*limit):
+        docs.append(d._store)
+
+    # result
+    res = {}
+    res['page'] = page
+    res['limit'] = limit
+    res['events'] = docs
+    res['count'] = len(docs)
+    return jsonify(res)
 
 # /events/uid
 @app.route('/events/<int:uid>')
