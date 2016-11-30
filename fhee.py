@@ -14,7 +14,7 @@ def events():
     """Returns a list of events.
 
     Returns:
-        events (list): a list of events
+        events (:obj:`list`): a list of events
     """
     # get pagination params
     page = request.args.get('page', 1)
