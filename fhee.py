@@ -103,7 +103,10 @@ def event(uid):
             }
     """
     # do DB query
-    doc = collection.fetchFirstExample(exampleDict={'uid': int(uid)})[0]._store
+    try:
+        doc = collection.fetchFirstExample(exampleDict={'uid': int(uid)})[0]._store
+    except IndexError:
+        doc = {}
     return jsonify(doc)
 
 if __name__ == "__main__":
