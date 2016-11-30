@@ -32,7 +32,7 @@ def event(uid):
         uid (int): an event unique id
 
     Returns:
-        event (:obj:`event`): an event object
+        event (:obj:`dict`): an event object
 
             {
                 "uid": "",
