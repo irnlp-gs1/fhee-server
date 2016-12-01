@@ -1,7 +1,6 @@
 from flask import Flask
 from flask import request
 from flask import jsonify
-from flask.ext.api import status
 from pyArango.connection import Connection
 app = Flask(__name__)
 
@@ -104,10 +103,10 @@ def event(uid):
     # do DB query
     try:
         doc = collection.fetchFirstExample(exampleDict={'uid': int(uid)})[0]._store
-        code = status.HTTP_200_OK
+        code = 200
     except IndexError:
         doc = {}
-        code = status.HTTP_404_NOT_FOUND
+        code = 404
 
     return jsonify(doc), code
 
