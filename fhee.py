@@ -61,8 +61,12 @@ def events():
 
     # do DB query    
     docs = []
-    for d in collection.fetchAll(limit=limit, skip=(page-1)*limit):
+    aql = "FOR d IN fhee SORT DATE_TIMESTAMP(d.analyzed_at) DESC LIMIT {offset}, {count} RETURN d".format(count=limit, offset=(page-1)*limit)
+    res = db.AQLQuery(aql)
+    for d in res:
         docs.append(d._store)
+    # for d in collection.fetchAll(limit=limit, skip=(page-1)*limit):
+      #   docs.append(d._store)
 
     # result
     res = {}
