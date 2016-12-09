@@ -62,11 +62,9 @@ def events():
     # do DB query    
     docs = []
     aql = "FOR d IN fhee SORT DATE_TIMESTAMP(d.analyzed_at) DESC LIMIT {offset}, {count} RETURN d".format(count=limit, offset=(page-1)*limit)
-    res = db.AQLQuery(aql)
-    for d in res:
+    result = db.AQLQuery(aql)
+    for d in result:
         docs.append(d._store)
-    # for d in collection.fetchAll(limit=limit, skip=(page-1)*limit):
-      #   docs.append(d._store)
 
     # result
     res = {}
@@ -85,7 +83,7 @@ def event(uid):
         uid (int): an event unique id
 
     Returns:
-        event (:obj:`Event`): an event object
+        event (:obj:`dict`): an event object
 
             {
                 "uid": "",
@@ -109,9 +107,12 @@ def event(uid):
     # do DB query
     try:
         doc = collection.fetchFirstExample(exampleDict={'uid': int(uid)})[0]._store
+        code = 200
     except IndexError:
         doc = {}
-    return jsonify(doc)
+        code = 404
+
+    return jsonify(doc), code
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
