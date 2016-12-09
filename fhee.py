@@ -1,3 +1,5 @@
+import arrow
+from arrow.parser import ParserError
 from flask import Flask
 from flask import request
 from flask import jsonify
@@ -48,6 +50,7 @@ def events():
         {
             'page': 1,
             'limit': 20,
+            'after': '[datetime in ISO8601 format]'
             'events': [...],
             'count': 20
         }
@@ -56,12 +59,20 @@ def events():
     try:
         page = int(request.args.get('page', 1))
         limit = int(request.args.get('limit', 20))
+        after = request.args.get('after', None) 
     except ValueError:
         return None
 
-    # do DB query    
+    # validate datetime
+    try:
+        after = arrow.get(after).isoformat()
+    except ParserError:
+        return '"after" parameter must be in ISO format (e.g. 2016-12-09T06:12:08.000Z). Given: {}'.format(after), 400
+
+    # do DB query
     docs = []
-    aql = "FOR d IN fhee SORT DATE_TIMESTAMP(d.analyzed_at) DESC LIMIT {offset}, {count} RETURN d".format(count=limit, offset=(page-1)*limit)
+    after_filter = "FILTER d.analyzed_at > '{}'".format(after) if after else ''
+    aql = "FOR d IN fhee SORT DATE_TIMESTAMP(d.analyzed_at) DESC LIMIT {offset}, {count} {after} RETURN d".format(count=limit, offset=(page-1)*limit, after=after_filter)
     result = db.AQLQuery(aql)
     for d in result:
         docs.append(d._store)
