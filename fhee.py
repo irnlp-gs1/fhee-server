@@ -1,4 +1,5 @@
 import arrow
+import logging
 from arrow.parser import ParserError
 from flask import Flask
 from flask import request
@@ -8,6 +9,8 @@ app = Flask(__name__)
 
 DB = 'gs1'
 COLLECTION = 'fhee'
+
+logger = logging.getLogger(__name__)
 
 def _get_db():
     """Return DB & collection
@@ -55,6 +58,11 @@ def events():
             'count': 20
         }
     """
+    # reset params
+    page = None
+    limit = None
+    after, after_filter = None, None
+
     # get pagination params
     try:
         page = int(request.args.get('page', 1))
@@ -65,14 +73,20 @@ def events():
 
     # validate datetime
     try:
-        after = arrow.get(after).isoformat()
+        arrow.get(after).isoformat()
     except ParserError:
         return '"after" parameter must be in ISO format (e.g. 2016-12-09T06:12:08.000Z). Given: {}'.format(after), 400
 
     # do DB query
     docs = []
     after_filter = "FILTER d.analyzed_at > '{}'".format(after) if after else ''
+
+
+    logger.warning(after)
+    logger.warning(after_filter)
+
     aql = "FOR d IN fhee SORT DATE_TIMESTAMP(d.analyzed_at) DESC LIMIT {offset}, {count} {after} RETURN d".format(count=limit, offset=(page-1)*limit, after=after_filter)
+    logger.warning(aql)
     result = db.AQLQuery(aql)
     for d in result:
         docs.append(d._store)
