@@ -1,0 +1,36 @@
+reporter: apiary
+custom:
+  apiaryApiKey: 7b570d8cc075c02316244aa3075900dd
+  apiaryApiName: gs1fhee
+dry-run: null
+hookfiles: null
+language: python
+sandbox: false
+server: 'FLASK_APP=fhee.py gunicorn wsgi:app'
+server-wait: 3
+init: false
+names: false
+only: []
+output: []
+header: []
+sorted: false
+user: null
+inline-errors: false
+details: false
+method: []
+color: true
+level: info
+timestamp: false
+silent: false
+path: []
+hooks-worker-timeout: 5000
+hooks-worker-connect-timeout: 1500
+hooks-worker-connect-retry: 500
+hooks-worker-after-connect-wait: 100
+hooks-worker-term-timeout: 5000
+hooks-worker-term-retry: 500
+hooks-worker-handler-host: localhost
+hooks-worker-handler-port: 61321
+config: ./dredd.yml
+blueprint: .
+endpoint: 'http://localhost:8000'

@@ -80,13 +80,7 @@ def events():
     # do DB query
     docs = []
     after_filter = "FILTER d.analyzed_at > '{}'".format(after) if after else ''
-
-
-    logger.warning(after)
-    logger.warning(after_filter)
-
     aql = "FOR d IN fhee SORT DATE_TIMESTAMP(d.analyzed_at) DESC LIMIT {offset}, {count} {after} RETURN d".format(count=limit, offset=(page-1)*limit, after=after_filter)
-    logger.warning(aql)
     result = db.AQLQuery(aql)
     for d in result:
         docs.append(d._store)
