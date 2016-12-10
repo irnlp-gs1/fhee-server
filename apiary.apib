@@ -12,7 +12,7 @@ An endpoint to access food hazard event information extracted from various sourc
 + Parameters
     + page (number, optional) - parameter for pagination. The first page is returned if not specified.
     + limit (number, optional) - default is 20
-    + after: `2016-12-09T06:12:08.000Z` (datetime, optional) - fetch events no later than the given datetime. You can directly use `analyzed_at` value.
+    + after: `2016-12-09T06:12:08.000Z` (datetime, optional) - fetch events that have bigger `analyzed_at` value. Should be in ISO8601 format.
     
 + Response 200 (application/json)
     
