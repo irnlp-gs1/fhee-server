@@ -73,7 +73,7 @@ def events():
 
     # validate datetime
     try:
-        arrow.get(after).isoformat()
+        arrow.get(after, 'YYYY-MM-DDTHH:mm:ss')
     except ParserError:
         return '"after" parameter must be in ISO format (e.g. 2016-12-09T06:12:08.000Z). Given: {}'.format(after), 400
 
