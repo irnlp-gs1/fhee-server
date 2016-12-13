@@ -5,6 +5,7 @@ from flask import Flask
 from flask import request
 from flask import jsonify
 from flask import make_response
+from flask import url_for
 from pyArango.connection import Connection
 from pyArango.theExceptions import QueryError
 app = Flask(__name__)
@@ -13,6 +14,9 @@ DB = 'gs1'
 COLLECTION = 'fhee'
 
 logger = logging.getLogger(__name__)
+
+# favicon
+# app.add_url_rule('/favicon.ico', redirect_to=url_for('static', filename='favicon.ico'))
 
 def _get_db():
     """Return DB & collection
@@ -45,7 +49,7 @@ def index():
     return make_response(('Index', 200))
 
 # /events
-@app.route('/events')
+@app.route('/events/')
 def events():
     """Returns a list of events.
 
@@ -98,15 +102,17 @@ def events():
         docs.append(d._store)
 
     # result
-    res = {}
-    res['page'] = page
-    res['limit'] = limit
-    res['events'] = docs
-    res['count'] = len(docs)
-    return jsonify(res), 200, {'Content-Type': 'application/json; charset=utf-8'}
+    data = {}
+    data['page'] = page
+    data['limit'] = limit
+    data['events'] = docs
+    data['count'] = len(docs)
+    response = make_response(jsonify(data), 200)
+    response.mimetype = 'application/json'
+    return response
 
 # /events/uid
-@app.route('/events/<int:uid>')
+@app.route('/events/<int:uid>/')
 def event(uid):
     """Return a single event
 
@@ -143,7 +149,8 @@ def event(uid):
         doc = {}
         code = 404
 
-    return jsonify(doc), code, {'Content-Type': 'application/json; charset=utf-8'}
+    response = make_response(jsonify(doc), code)
+    return response
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
