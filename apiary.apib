@@ -5,7 +5,7 @@ HOST: http://localhost:8000
 
 An endpoint to access food hazard event information extracted from various sources (e.g. News, SNS)
 
-## Events Collection [/events{?page,limit,after}]
+## Events Collection [/events{?page,limit,after,sort_order}]
 
 ### List of All Events [GET]
 
@@ -13,8 +13,9 @@ An endpoint to access food hazard event information extracted from various sourc
     + page (number, optional) - parameter for pagination. The first page is returned if not specified.
     + limit (number, optional) - default is 20
     + after: `2016-12-09T06:12:08.000Z` (datetime, optional) - fetch events that have bigger `analyzed_at` value. Should be in ISO8601 format.
+    + sort_order: desc (string, optional) - Specify sort order (`desc` or `asc`)
     
-+ Response 200 (application/json)
++ Response 200 (application/json)_
     
     + Attributes
         
