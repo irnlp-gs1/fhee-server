@@ -112,12 +112,12 @@ def events():
     return response
 
 # /events/uid
-@app.route('/events/<int:uid>/')
+@app.route('/events/<string:uid>/')
 def event(uid):
     """Return a single event
 
     Args:
-        uid (int): an event unique id
+        uid (str): an event unique id
 
     Returns:
         event (:obj:`dict`): an event object
