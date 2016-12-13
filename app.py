@@ -92,7 +92,7 @@ def events():
 
     # do DB query
     docs = []
-    aql = "FOR d IN fhee {after_filter} LIMIT {offset}, {count} SORT DATE_TIMESTAMP(d.analyzed_at) {sort_order} RETURN d".format(count=limit, offset=(page-1)*limit, after_filter=after_filter, sort_order=sort_order)
+    aql = "FOR d IN fhee {after_filter} SORT DATE_TIMESTAMP(d.analyzed_at) {sort_order} LIMIT {offset}, {count} RETURN d".format(count=limit, offset=(page-1)*limit, after_filter=after_filter, sort_order=sort_order)
     try:
         result = db.AQLQuery(aql)
     except QueryError:
@@ -112,7 +112,7 @@ def events():
     return response
 
 # /events/uid
-@app.route('/events/<string:uid>/')
+@app.route('/events/<uid>/')
 def event(uid):
     """Return a single event
 
