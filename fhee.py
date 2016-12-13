@@ -4,6 +4,7 @@ from arrow.parser import ParserError
 from flask import Flask
 from flask import request
 from flask import jsonify
+from flask import make_response
 from pyArango.connection import Connection
 from pyArango.theExceptions import QueryError
 app = Flask(__name__)
@@ -41,7 +42,7 @@ db, collection = _get_db()
 @app.route('/')
 def index():
     """Dummy index page"""
-    return 'Index Page'
+    return make_response(('Index', 200))
 
 # /events
 @app.route('/events')
@@ -77,13 +78,16 @@ def events():
     # param: after
     try:
         after = request.args.get('after', None)
-        arrow.get(after, 'YYYY-MM-DDTHH:mm:ss')
+        if after:
+            arrow.get(after, 'YYYY-MM-DDTHH:mm:ss')
+        after_filter = "FILTER d.analyzed_at > '{}'".format(after) if after else ''
     except ParserError:
+        return '"after" parameter must be in ISO format (e.g. 2016-12-09T06:12:08.000Z). Given: {}'.format(after), 400
+    except TypeError:
         return '"after" parameter must be in ISO format (e.g. 2016-12-09T06:12:08.000Z). Given: {}'.format(after), 400
 
     # do DB query
     docs = []
-    after_filter = "FILTER d.analyzed_at > '{}'".format(after) if after else ''
     aql = "FOR d IN fhee {after_filter} LIMIT {offset}, {count} SORT DATE_TIMESTAMP(d.analyzed_at) {sort_order} RETURN d".format(count=limit, offset=(page-1)*limit, after_filter=after_filter, sort_order=sort_order)
     try:
         result = db.AQLQuery(aql)
@@ -99,7 +103,7 @@ def events():
     res['limit'] = limit
     res['events'] = docs
     res['count'] = len(docs)
-    return jsonify(res)
+    return jsonify(res), 200, {'Content-Type': 'application/json; charset=utf-8'}
 
 # /events/uid
 @app.route('/events/<int:uid>')
@@ -139,7 +143,7 @@ def event(uid):
         doc = {}
         code = 404
 
-    return jsonify(doc), code
+    return jsonify(doc), code, {'Content-Type': 'application/json; charset=utf-8'}
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
