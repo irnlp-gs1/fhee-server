@@ -58,21 +58,24 @@ def events():
             'count': 20
         }
     """
-    # reset params
-    page = None
-    limit = None
-    after, after_filter = None, None
-
-    # get pagination params
+    # param: pagination
     try:
         page = int(request.args.get('page', 1))
         limit = int(request.args.get('limit', 20))
-        after = request.args.get('after', None) 
     except ValueError:
-        return None
+        return '"page" and "limit" parameters must be integer. Given: page - {} / limit - {}'.format(page, limit), 400
 
-    # validate datetime
+    # param: order
     try:
+        sort_order = str(request.args.get('sort_order', 'DESC'))
+        if sort_order.lower() not in ('desc', 'asc'):
+            raise ValueError
+    except ValueError:
+        return '"sort_order" parameter value must be DESC or ASC. Given: {}'.format(sort_order), 400
+
+    # param: after
+    try:
+        after = request.args.get('after', None)
         arrow.get(after, 'YYYY-MM-DDTHH:mm:ss')
     except ParserError:
         return '"after" parameter must be in ISO format (e.g. 2016-12-09T06:12:08.000Z). Given: {}'.format(after), 400
@@ -80,7 +83,7 @@ def events():
     # do DB query
     docs = []
     after_filter = "FILTER d.analyzed_at > '{}'".format(after) if after else ''
-    aql = "FOR d IN fhee SORT DATE_TIMESTAMP(d.analyzed_at) DESC LIMIT {offset}, {count} {after} RETURN d".format(count=limit, offset=(page-1)*limit, after=after_filter)
+    aql = "FOR d IN fhee SORT DATE_TIMESTAMP(d.analyzed_at) {sort_order} LIMIT {offset}, {count} {after} RETURN d".format(count=limit, offset=(page-1)*limit, after=after_filter, sort_order=sort_order)
     result = db.AQLQuery(aql)
     for d in result:
         docs.append(d._store)
