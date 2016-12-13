@@ -6,7 +6,7 @@ dry-run: null
 hookfiles: null
 language: python
 sandbox: false
-server: 'FLASK_APP=fhee.py gunicorn wsgi:app'
+server: 'gunicorn wsgi:app'
 server-wait: 3
 init: false
 names: false
@@ -32,5 +32,5 @@ hooks-worker-term-retry: 500
 hooks-worker-handler-host: localhost
 hooks-worker-handler-port: 61321
 config: ./dredd.yml
-blueprint: .
+blueprint: apiary.apib
 endpoint: 'http://localhost:8000'
