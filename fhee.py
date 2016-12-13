@@ -5,6 +5,7 @@ from flask import Flask
 from flask import request
 from flask import jsonify
 from pyArango.connection import Connection
+from pyArango.theExceptions import QueryError
 app = Flask(__name__)
 
 DB = 'gs1'
@@ -83,8 +84,12 @@ def events():
     # do DB query
     docs = []
     after_filter = "FILTER d.analyzed_at > '{}'".format(after) if after else ''
-    aql = "FOR d IN fhee SORT DATE_TIMESTAMP(d.analyzed_at) {sort_order} LIMIT {offset}, {count} {after} RETURN d".format(count=limit, offset=(page-1)*limit, after=after_filter, sort_order=sort_order)
-    result = db.AQLQuery(aql)
+    aql = "FOR d IN fhee {after_filter} LIMIT {offset}, {count} SORT DATE_TIMESTAMP(d.analyzed_at) {sort_order} RETURN d".format(count=limit, offset=(page-1)*limit, after_filter=after_filter, sort_order=sort_order)
+    try:
+        result = db.AQLQuery(aql)
+    except QueryError:
+        return 'Malformed DB query', 500
+
     for d in result:
         docs.append(d._store)
 
