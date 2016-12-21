@@ -24,7 +24,7 @@ def _get_db():
     Returns:
         (db, collection)
     """
-    conn = Connection(arangoURL='http://arango.kyoungrok.com',
+    conn = Connection(arangoURL='http://localhost:8529',
                       username='root',
                       password='ir7753nlp!')
 
